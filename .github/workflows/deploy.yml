@@ -1,0 +1,42 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v3
+
+      - name: Give execute permission to gradlew
+        run: chmod +x ./gradlew
+
+      - name: Build Spring Boot .jar
+        run: ./gradlew bootJar
+
+      - name: Copy .jar to EC2 using SCP
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: build/libs/app.jar
+          target: ~/DRAWING-DIARY-SERVER/build/libs/
+          strip_components: 2
+
+      - name: Remote deploy via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd ~/DRAWING-DIARY-SERVER
+            git pull
+            docker-compose down
+            docker-compose build --no-cache
+            docker-compose up -d
