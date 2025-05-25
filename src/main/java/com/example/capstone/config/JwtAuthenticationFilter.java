@@ -31,13 +31,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String method = request.getMethod();
         String token = resolveToken(request);
 
+        String paddedMethod = String.format("%-7s", method);
+
         if (token == null) {
-            log.info("[JwtFilter] 토큰 없음. {} 요청 - URI: {}", method, uri);
+            log.info("[JwtFilter] 토큰 없음. Method: {} - URI: {}", paddedMethod, uri);
         } else if (!tokenProvider.validateToken(token)) {
-            log.info("[JwtFilter] 유효하지 않은 토큰. {} 요청 - URI: {}", method, uri);
+            log.info("[JwtFilter] 유효하지 않은 토큰. Method: {} - URI: {}", paddedMethod, uri);
         } else {
             Authentication auth = tokenProvider.getAuthentication(token);
-            log.info("[JwtFilter] 인증 성공 - loginId: {}, {} 요청 - URI: {}", auth.getName(), method, uri);
+            log.info("[JwtFilter] 인증 성공 - loginId: {}, Method: {} - URI: {}", auth.getName(), paddedMethod, uri);
             SecurityContextHolder.getContext().setAuthentication(auth);
         }
 
