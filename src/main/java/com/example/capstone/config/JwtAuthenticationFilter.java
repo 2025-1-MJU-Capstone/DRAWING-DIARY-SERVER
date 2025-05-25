@@ -28,15 +28,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
 
         String uri = request.getRequestURI();
+        String method = request.getMethod();
         String token = resolveToken(request);
 
         if (token == null) {
-            log.info("[JwtFilter] 토큰 없음. URI: {}", uri);
+            log.info("[JwtFilter] 토큰 없음. {} 요청 - URI: {}", method, uri);
         } else if (!tokenProvider.validateToken(token)) {
-            log.info("[JwtFilter] 유효하지 않은 토큰. URI: {}", uri);
+            log.info("[JwtFilter] 유효하지 않은 토큰. {} 요청 - URI: {}", method, uri);
         } else {
             Authentication auth = tokenProvider.getAuthentication(token);
-            log.info("[JwtFilter] 인증 성공 - loginId: {}, URI: {}", auth.getName(), uri);
+            log.info("[JwtFilter] 인증 성공 - loginId: {}, {} 요청 - URI: {}", auth.getName(), method, uri);
             SecurityContextHolder.getContext().setAuthentication(auth);
         }
 
