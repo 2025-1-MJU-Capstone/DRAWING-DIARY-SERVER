@@ -1,5 +1,6 @@
 package com.example.capstone.diary;
 
+import com.example.capstone.diary.dto.DiaryRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -19,14 +20,17 @@ public class DiaryAiClient {
 
     private final RestTemplate restTemplate;
 
-    public String generateImage(String feeling, String color, String customStyle) {
+    public String generateImage(DiaryRequest request) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         Map<String, String> body = new HashMap<>();
-        body.put("feeling", feeling);
-        body.put("color", color);
-        body.put("customStyle", customStyle);
+        body.put("diaryDate", request.getDiaryDate().toString());
+        body.put("title", request.getTitle());
+        body.put("content", request.getContent());
+        body.put("feeling", request.getFeeling());
+        body.put("color", request.getColor());
+        body.put("customStyle", request.getCustomStyle());
 
         HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(body, headers);
 

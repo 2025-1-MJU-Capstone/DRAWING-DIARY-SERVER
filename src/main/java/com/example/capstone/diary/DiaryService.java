@@ -35,7 +35,7 @@ public class DiaryService {
         Font font = fontRepository.findById(request.getFontId())
                 .orElseThrow(() -> new NotFoundException("폰트를 찾을 수 없습니다."));
 
-        String base64Image = diaryAiClient.generateImage(request.getFeeling(), request.getColor(), request.getCustomStyle());
+        String base64Image = diaryAiClient.generateImage(request);
         byte[] imageBytes = Base64.getDecoder().decode(base64Image);
 
         String imageFileName = member.getId() + "/diary/" + UUID.randomUUID() + ".png";
