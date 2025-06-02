@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @SecurityRequirement(name = "BearerAuth")
 @RestController
@@ -55,15 +57,20 @@ public class FontController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/image")
-    public ResponseEntity<Resource> downloadInputImage(@AuthenticationPrincipal CustomUserDetails userDetails) throws IOException {
-        Member member = userDetails.getMember();
-        Resource inputImage = fontService.getInputImage();
+//    @GetMapping("/image")
+//    public ResponseEntity<Resource> downloadInputImage(@AuthenticationPrincipal CustomUserDetails userDetails) throws IOException {
+//        Resource inputImage = fontService.getInputImage();
+//        return ResponseEntity.ok()
+//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=inputImage.png")
+//                .contentType(MediaType.IMAGE_PNG)
+//                .contentLength(inputImage.contentLength())
+//                .body(inputImage);
+//        }
 
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=inputImage.png")
-                    .contentType(MediaType.IMAGE_PNG)
-                    .contentLength(inputImage.contentLength())
-                    .body(inputImage);
-        }
+    @GetMapping("/image")
+    public ResponseEntity<Map<String, String>> downloadInputImage() {
+        Map<String, String> response = new HashMap<>();
+        response.put("url", fontService.getInputImageUrl());
+        return ResponseEntity.ok(response);
     }
+}

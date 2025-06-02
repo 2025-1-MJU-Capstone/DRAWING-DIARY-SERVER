@@ -101,4 +101,8 @@ public class S3Uploader {
             s3Client.deleteObjects(deleteRequest);
         }
     }
+
+    public String getUrl(String fileName) {
+        return "https://" + bucket + ".s3." + region + ".amazonaws.com/" + fileName;
+    }
 }

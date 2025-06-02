@@ -25,7 +25,7 @@ public class FontService {
     private final FontRepository fontRepository;
     private final FontAiClient fontAiClient;
     private final S3Uploader s3Uploader;
-    private static final String IMAGE_PATH = "static/images/inputImage.png";
+//    private static final String IMAGE_PATH = "static/images/inputImage.png";
 
     @Transactional
     public Font generateFont(List<MultipartFile> images, String fontName, Member member) throws IOException {
@@ -79,7 +79,11 @@ public class FontService {
         fontRepository.delete(font);
     }
 
-    public Resource getInputImage() throws IOException {
-        return new ClassPathResource(IMAGE_PATH);
+//    public Resource getInputImage() throws IOException {
+//        return new ClassPathResource(IMAGE_PATH);
+//    }
+
+    public String getInputImageUrl() {
+        return s3Uploader.getUrl("inputImage.png");
     }
 }
