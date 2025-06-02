@@ -7,6 +7,8 @@ import com.example.capstone.global.exception.NotFoundException;
 import com.example.capstone.member.Member;
 import com.example.capstone.s3.S3Uploader;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,6 +25,7 @@ public class FontService {
     private final FontRepository fontRepository;
     private final FontAiClient fontAiClient;
     private final S3Uploader s3Uploader;
+    private static final String IMAGE_PATH = "static/images/inputImage.png";
 
     @Transactional
     public Font generateFont(List<MultipartFile> images, String fontName, Member member) throws IOException {
@@ -74,5 +77,9 @@ public class FontService {
         s3Uploader.delete(font.getFontFileName());
 
         fontRepository.delete(font);
+    }
+
+    public Resource getInputImage() throws IOException {
+        return new ClassPathResource(IMAGE_PATH);
     }
 }

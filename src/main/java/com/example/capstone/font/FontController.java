@@ -5,6 +5,8 @@ import com.example.capstone.font.dto.FontResponse;
 import com.example.capstone.member.Member;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -52,4 +54,16 @@ public class FontController {
         fontService.deleteFont(fontId, member);
         return ResponseEntity.ok().build();
     }
-}
+
+    @GetMapping("/image")
+    public ResponseEntity<Resource> downloadInputImage(@AuthenticationPrincipal CustomUserDetails userDetails) throws IOException {
+        Member member = userDetails.getMember();
+        Resource inputImage = fontService.getInputImage();
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=inputImage.png")
+                    .contentType(MediaType.IMAGE_PNG)
+                    .contentLength(inputImage.contentLength())
+                    .body(inputImage);
+        }
+    }
